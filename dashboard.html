@@ -46,7 +46,7 @@
     <header class="top">
       <div>
         <h1 id="title">Overview</h1>
-        <p class="crumb">DoorDash · <span id="rangeLabel">All time</span></p>
+        <p class="crumb"><span id="appLabel">DoorDash + Uber Eats</span> · <span id="rangeLabel">All time</span></p>
       </div>
       <div class="presets" role="group" aria-label="Date range">
         <button data-p="7">7D</button><button data-p="30">30D</button><button data-p="90">90D</button>
@@ -58,6 +58,7 @@
       <label class="field"><svg><use href="#i-cal"/></svg><input type="date" id="from" aria-label="From"></label>
       <span class="dash">→</span>
       <label class="field"><svg><use href="#i-cal"/></svg><input type="date" id="to" aria-label="To"></label>
+      <select id="app" aria-label="App"><option value="">All apps</option><option value="doordash">DoorDash</option><option value="ubereats">Uber Eats</option></select>
       <select id="store" aria-label="Restaurant"><option value="">All restaurants</option></select>
       <select id="type" aria-label="Order type"><option value="">All order types</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option><option value="group">Group</option></select>
       <label class="chk"><input type="checkbox" id="cancelled"> Include cancelled</label>
@@ -68,7 +69,7 @@
     <div id="empty" hidden>
       <img src="icons/icon-128.png" alt="">
       <h2>No orders yet</h2>
-      <p>Open <a href="https://www.doordash.com/orders/" target="_blank">doordash.com</a> while logged in, click the FatPass icon, then click <b>Sync new orders</b>.</p>
+      <p>Open <a href="https://www.doordash.com/orders/" target="_blank">doordash.com</a> or <a href="https://www.ubereats.com/orders" target="_blank">ubereats.com</a> while logged in, click the FatPass icon, then click <b>Sync</b>.</p>
     </div>
   </div>
 </div>

@@ -104,7 +104,7 @@
     const total = o.grandTotal?.unitAmount || 0;
     if (!fees.subtotal) fees.subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
     return {
-      id: String(o.id), uuid: o.orderUuid,
+      platform: 'doordash', id: String(o.id), uuid: o.orderUuid,
       date: o.submittedAt || o.createdAt,
       fulfilledAt: o.fulfilledAt || null,
       cancelled: !!o.cancelledAt,
@@ -124,7 +124,9 @@
     if (!isLoggedIn()) return { status: 'logged_out' };
     running = true;
     try {
-      const { orders: existing = [], account } = await chrome.storage.local.get(['orders', 'account']);
+      const { orders: all = [], account } = await chrome.storage.local.get(['orders', 'account']);
+      const others = all.filter((o) => (o.platform || 'doordash') !== 'doordash');
+      const existing = all.filter((o) => (o.platform || 'doordash') === 'doordash');
       const me = cookie('dd_cx_logged_in');
       // different DoorDash account (or full re-sync) => start clean so old orders don't mix in
       const fresh0 = full || (account && account !== me);
@@ -163,7 +165,7 @@
       await Promise.all(Array.from({ length: RECEIPT_WORKERS }, worker));
 
       for (const o of out) known.set(o.id, o);
-      const merged = [...known.values()].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const merged = [...known.values(), ...others].sort((a, b) => new Date(b.date) - new Date(a.date));
       await chrome.storage.local.set({ orders: merged, lastSync: Date.now() });
       setStatus({ state: 'done', done: out.length, total: merged.length });
       return { status: 'success', added: out.length, total: merged.length };

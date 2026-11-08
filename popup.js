@@ -1,5 +1,6 @@
 const $ = (id) => document.getElementById(id);
-let tab = null;
+let tab = null, site = null;
+const SITE_NAME = { doordash: 'DoorDash', ubereats: 'Uber Eats' };
 
 function fmt(c) { return '$' + (c / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
@@ -15,26 +16,30 @@ function status(text, kind = '') { $('msg').textContent = text; $('dot').classNa
 async function ensureScript() {
   try { return await chrome.tabs.sendMessage(tab.id, { action: 'ping' }); }
   catch (_) {
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'] });
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: [site === 'ubereats' ? 'ubereats.js' : 'content.js'] });
     return chrome.tabs.sendMessage(tab.id, { action: 'ping' });
   }
 }
 
 async function init() {
   [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const onDD = tab?.url?.startsWith('https://www.doordash.com');
+  const u = tab?.url || '';
+  site = u.startsWith('https://www.doordash.com') ? 'doordash' : u.startsWith('https://www.ubereats.com') ? 'ubereats' : null;
   showStats();
-  if (!onDD) {
-    status('Open DoorDash while logged in to sync.');
+  if (!site) {
+    status('Open DoorDash or Uber Eats while logged in to sync.');
     $('sync').textContent = 'Open DoorDash';
     $('sync').onclick = () => chrome.tabs.create({ url: 'https://www.doordash.com/orders/' });
-    $('full').hidden = true; $('dash').style.gridColumn = '1/-1';
+    $('full').hidden = false; $('full').textContent = 'Open Uber Eats';
+    $('full').onclick = () => chrome.tabs.create({ url: 'https://www.ubereats.com/orders' });
+    $('dash').style.gridColumn = '1/-1';
     return;
   }
   const p = await ensureScript().catch(() => null);
-  if (!p) { status('Reload the DoorDash tab, then try again.', 'bad'); return; }
-  if (!p.loggedIn) { status('Log in to DoorDash first.', 'bad'); $('sync').disabled = $('full').disabled = true; return; }
-  status(p.running ? 'Sync in progress…' : 'Ready to sync', p.running ? 'busy' : 'ok');
+  if (!p) { status(`Reload the ${SITE_NAME[site]} tab, then try again.`, 'bad'); return; }
+  if (!p.loggedIn) { status(`Log in to ${SITE_NAME[site]} first.`, 'bad'); $('sync').disabled = $('full').disabled = true; return; }
+  status(p.running ? 'Sync in progress…' : `Ready to sync ${SITE_NAME[site]}`, p.running ? 'busy' : 'ok');
+  $('sync').textContent = `Sync ${SITE_NAME[site]} orders`;
   $('sync').onclick = () => run(false);
   $('full').onclick = () => run(true);
 }
@@ -44,9 +49,9 @@ async function run(full) {
   status('Syncing…', 'busy');
   const r = await chrome.tabs.sendMessage(tab.id, { action: 'sync', full }).catch((e) => ({ status: 'error', error: e.message }));
   $('sync').disabled = $('full').disabled = false;
-  if (r.status === 'success') status(`Synced ${r.added} new orders`, 'ok');
+  if (r.status === 'success') status(`Synced ${r.added} new ${SITE_NAME[site]} orders`, 'ok');
   else if (r.status === 'busy') status('Already syncing…', 'busy');
-  else status(r.status === 'logged_out' ? 'Log in to DoorDash first.' : 'Sync failed: ' + r.error, 'bad');
+  else status(r.status === 'logged_out' ? `Log in to ${SITE_NAME[site]} first.` : 'Sync failed: ' + r.error, 'bad');
   showStats();
 }
 

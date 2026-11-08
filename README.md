@@ -5,7 +5,7 @@
 <h1 align="center">FatPass</h1>
 
 <p align="center">
-  <b>See exactly how much you've spent on DoorDash: every order, fee and tip.</b><br>
+  <b>See exactly how much you've spent on DoorDash and Uber Eats: every order, fee and tip.</b><br>
   A free, private extension for Microsoft Edge and Google Chrome. No account, no servers, no tracking.
 </p>
 
@@ -13,6 +13,7 @@
   <img alt="Manifest V3" src="https://img.shields.io/badge/manifest-v3-7c5cff">
   <img alt="Microsoft Edge" src="https://img.shields.io/badge/Microsoft%20Edge-supported-0078d7">
   <img alt="Google Chrome" src="https://img.shields.io/badge/Google%20Chrome-supported-ff5c93">
+  <img alt="DoorDash + Uber Eats" src="https://img.shields.io/badge/works%20with-DoorDash%20%2B%20Uber%20Eats-33d1ff">
   <img alt="No dependencies" src="https://img.shields.io/badge/dependencies-0-3ee08f">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-ffb547">
 </p>
@@ -21,7 +22,7 @@
   <img src="screenshots/overview.png" alt="FatPass overview dashboard" width="900">
 </p>
 
-> Screenshots use made-up demo orders. Your dashboard shows your own DoorDash history.
+> Screenshots use made-up demo orders. Your dashboard shows your own DoorDash and Uber Eats history.
 
 ---
 
@@ -43,7 +44,8 @@
 ## Features
 
 **Your whole order history in one place**
-- Syncs every DoorDash order you've placed, including the full receipt for each one
+- Syncs every order you've placed on **DoorDash** and **Uber Eats**, including the receipt breakdown
+- See both apps together, or filter to just one
 - Fast: reads 6 receipts at once, and later syncs only grab new orders
 - Splits every receipt into food, delivery fee, service fee, other fees, tax, tip, promos and DashPass savings
 
@@ -51,17 +53,17 @@
 
 | Tab | What you get |
 | --- | --- |
-| **Overview** | Total spent, how much of it was actually food, your top restaurant, 10 quick stats, spending over time, where your money goes |
+| **Overview** | Total spent, how much of it was actually food, your top restaurant, 10 quick stats, spending over time, DoorDash vs Uber Eats, where your money goes |
 | **Restaurants** | Where you order most, highest average order, a sortable table of every place (click a row to filter to it) |
 | **Items** | Your most ordered items, what you spent on each, and a search box |
 | **Fees & tips** | Delivery, service and other fees, taxes, tips, promos, average tip %, and fees by restaurant |
 | **Trends** | Running total, orders per month, average order per month, year-over-year table |
 | **Habits** | A day × hour chart of when you order, busiest day and hour, meal times, payment cards, delivery addresses |
-| **Orders** | Every order with search and sorting. Click one to see its full receipt and a link to it on DoorDash |
+| **Orders** | Every order with search and sorting, tagged by app. Click one to see its full receipt and a link to it on DoorDash or Uber Eats |
 
 **Filters that apply to every tab**
 - Quick ranges: 7D, 30D, 90D, YTD, 1Y, All (All starts at your first order)
-- Custom from/to dates, restaurant, delivery/pickup/group, and an Include cancelled checkbox
+- Custom from/to dates, app (DoorDash or Uber Eats), restaurant, delivery/pickup/group, and an Include cancelled checkbox
 - **Apply filters** and **Reset** buttons
 
 **Extras**
@@ -107,17 +109,19 @@ FatPass isn't on the Edge Add-ons or Chrome Web Store yet, so you load it yourse
 
 ## How to use
 
-1. Go to [doordash.com](https://www.doordash.com/orders/) and log in.
+1. Go to [doordash.com](https://www.doordash.com/orders/) or [ubereats.com](https://www.ubereats.com/orders) and log in.
 2. Click the FatPass icon in the toolbar.
-3. Click **Sync new orders**. The progress bar shows how far along it is. Big histories (1,000+ orders) take a few minutes the first time.
-4. Click **Open dashboard**.
+3. Click **Sync DoorDash orders** or **Sync Uber Eats orders** (the button matches the site you're on). The progress bar shows how far along it is. Big histories (1,000+ orders) take a few minutes the first time.
+4. Do the same on the other site if you use both apps.
+5. Click **Open dashboard**.
 
-Next time, just click **Sync new orders** again. It only grabs orders you've placed since the last sync, so it's quick.
+Next time, just click the sync button again. It only grabs orders you've placed since the last sync, so it's quick.
 
 | Popup button | What it does |
 | --- | --- |
-| **Sync new orders** | Adds orders placed since your last sync |
-| **Full re-sync** | Throws out saved data and downloads your whole history again (use this if numbers look off) |
+| **Sync DoorDash / Uber Eats orders** | Adds orders placed since your last sync, from the site you're on |
+| **Full re-sync** | Throws out saved data for that app and downloads its whole history again (use this if numbers look off). Your other app's orders aren't touched |
+| **Open DoorDash / Open Uber Eats** | Shows when you're not on either site, to jump to one |
 | **Open dashboard** | Opens the dashboard in a new tab |
 
 ---
@@ -125,10 +129,10 @@ Next time, just click **Sync new orders** again. It only grabs orders you've pla
 ## How it works
 
 ```
- doordash.com tab                     FatPass
+ DoorDash or Uber Eats tab             FatPass
  ┌──────────────────┐   your login   ┌────────────────────┐
- │ content.js       │ ─────────────▶ │ DoorDash's own     │
- │ (runs on the page)│ ◀───────────── │ order + receipt API│
+ │ content.js or    │ ─────────────▶ │ the site's own     │
+ │ ubereats.js      │ ◀───────────── │ order + receipt API│
  └────────┬─────────┘    orders      └────────────────────┘
           │ saves
           ▼
@@ -138,10 +142,11 @@ Next time, just click **Sync new orders** again. It only grabs orders you've pla
  └──────────────────┘                └────────────────────┘
 ```
 
-- When you click **Sync**, `content.js` asks DoorDash for your order list, 25 at a time, the same way the DoorDash Orders page does. It uses your existing login, so FatPass never sees or stores your password.
-- For each order it also fetches the receipt, 6 at a time, and sorts each receipt line (Subtotal, Delivery Fee, Service Fee, Tax, Dasher Tip, promos…) into categories.
+- **DoorDash:** `content.js` asks DoorDash for your order list, 25 at a time, the same way the DoorDash Orders page does. For each order it also fetches the receipt, 6 at a time.
+- **Uber Eats:** `ubereats.js` reads your past orders page by page, the same way the Uber Eats Orders page does. The price breakdown comes with each order.
+- Both use your existing login, so FatPass never sees or stores your password. Each receipt line (Subtotal, Delivery Fee, Service Fee, Tax, Tip, promos…) gets sorted into categories.
 - Everything gets saved in your browser's extension storage. The dashboard reads it from there and draws every chart itself, with no chart libraries and no outside requests (apart from loading the font).
-- If you log into a different DoorDash account, FatPass clears the old account's orders first so they don't get mixed together.
+- If you log into a different DoorDash account, FatPass clears the old account's DoorDash orders first so they don't get mixed together.
 
 ---
 
@@ -149,11 +154,11 @@ Next time, just click **Sync new orders** again. It only grabs orders you've pla
 
 - **Your data stays on your computer.** Orders are kept in your browser's local extension storage and never get uploaded anywhere.
 - **No analytics, no tracking, no ads, no account.**
-- **Only talks to doordash.com**, and only when you click Sync.
+- **Only talks to doordash.com and ubereats.com**, and only when you click Sync.
 - **Permissions it asks for:**
   - `storage` / `unlimitedStorage`: to save your orders locally (big histories go over the default limit)
-  - `tabs` / `scripting`: to check you're on DoorDash and start the sync in that tab
-  - `https://www.doordash.com/*`: to read your orders
+  - `tabs` / `scripting`: to check you're on DoorDash or Uber Eats and start the sync in that tab
+  - `https://www.doordash.com/*`, `https://www.ubereats.com/*`: to read your orders
 - **Delete everything** anytime with **Clear data** in the dashboard, or by removing the extension.
 
 ---
@@ -161,15 +166,15 @@ Next time, just click **Sync new orders** again. It only grabs orders you've pla
 ## FAQ & troubleshooting
 
 <details>
-<summary><b>The popup says "Open DoorDash while logged in to sync."</b></summary>
+<summary><b>The popup says "Open DoorDash or Uber Eats while logged in to sync."</b></summary>
 
-The sync runs inside a DoorDash tab. Open [doordash.com/orders](https://www.doordash.com/orders/), make sure you're logged in, then click the FatPass icon again.
+The sync runs inside a DoorDash or Uber Eats tab. Open [doordash.com/orders](https://www.doordash.com/orders/) or [ubereats.com/orders](https://www.ubereats.com/orders), make sure you're logged in, then click the FatPass icon again.
 </details>
 
 <details>
-<summary><b>It says "Reload the DoorDash tab, then try again."</b></summary>
+<summary><b>It says "Reload the DoorDash tab" (or Uber Eats tab), then try again.</b></summary>
 
-This happens if you installed or reloaded FatPass while DoorDash was already open. Refresh the DoorDash tab and try again.
+This happens if you installed or reloaded FatPass while the site was already open. Refresh the DoorDash or Uber Eats tab and try again.
 </details>
 
 <details>
@@ -181,7 +186,7 @@ Click **Full re-sync** in the popup. That wipes the saved data and downloads you
 <details>
 <summary><b>Some orders say they have no receipt details.</b></summary>
 
-DoorDash sometimes fails to return a receipt. Totals are still right, but the fee breakdown is missing for those orders. Run **Full re-sync** to try again.
+DoorDash and Uber Eats sometimes leave out the price breakdown for an order. Totals are still right, but the fee breakdown is missing for those orders. Run **Full re-sync** to try again.
 </details>
 
 <details>
@@ -193,13 +198,19 @@ No, not unless you check **Include cancelled** in the filters.
 <details>
 <summary><b>Does it work with Uber Eats or Grubhub?</b></summary>
 
-Not right now. FatPass is DoorDash only.
+Uber Eats, yes. Grubhub, not yet.
+</details>
+
+<details>
+<summary><b>Uber Eats numbers look off.</b></summary>
+
+Uber Eats support is new, and Uber shows prices a little differently from DoorDash. Click **Full re-sync** on ubereats.com. If it's still wrong, please [open an issue](../../issues) and say which number looks wrong (no need to share your orders).
 </details>
 
 <details>
 <summary><b>The sync stopped working.</b></summary>
 
-DoorDash sometimes changes its website. Please [open an issue](../../issues) with the error message from the popup.
+DoorDash and Uber Eats sometimes change their websites. Please [open an issue](../../issues) with the error message from the popup.
 </details>
 
 ---
@@ -210,6 +221,7 @@ DoorDash sometimes changes its website. Please [open an issue](../../issues) wit
 FatPass/
 ├── manifest.json     extension settings (Manifest V3)
 ├── content.js        runs on doordash.com, fetches orders + receipts
+├── ubereats.js       runs on ubereats.com, fetches past orders
 ├── popup.html/.js    toolbar popup: sync buttons and progress
 ├── dashboard.html    the dashboard page
 ├── dashboard.css     all dashboard styles (dark + light)
@@ -227,10 +239,10 @@ Plain HTML, CSS and JavaScript. Nothing to install, no build step. Edit a file, 
 Bug reports and pull requests are welcome.
 
 1. Fork the repo and make your change.
-2. Load your copy with **Load unpacked** and test it on your own DoorDash account.
+2. Load your copy with **Load unpacked** and test it on your own DoorDash or Uber Eats account.
 3. Open a pull request saying what you changed and why.
 
-Ideas: Uber Eats and Grubhub support, monthly budget alerts, charts you can share, and publishing to the Edge Add-ons and Chrome Web Store.
+Ideas: Grubhub support, monthly budget alerts, charts you can share, and publishing to the Edge Add-ons and Chrome Web Store.
 
 ---
 
@@ -239,7 +251,7 @@ Ideas: Uber Eats and Grubhub support, monthly budget alerts, charts you can shar
 - Inspired by [BiteStats](https://github.com/SDev6699/bitestats) by Sahil Atul Darandale (MIT License).
 - Font: [Manrope](https://fonts.google.com/specimen/Manrope) from Google Fonts.
 
-**Disclaimer:** FatPass is an independent project and isn't affiliated with, endorsed by or sponsored by DoorDash. "DoorDash" and "DashPass" are trademarks of DoorDash, Inc. This extension is also made with claude.
+**Disclaimer:** FatPass is an independent project and isn't affiliated with, endorsed by or sponsored by DoorDash or Uber. "DoorDash" and "DashPass" are trademarks of DoorDash, Inc. "Uber Eats" and "Uber One" are trademarks of Uber Technologies, Inc. This extension is also made with claude.
 
 ## License
 

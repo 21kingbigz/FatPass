@@ -3,7 +3,7 @@
 **Repository name:** fatpass
 
 **Description (About box):**
-See exactly how much you've spent on DoorDash. A private Edge and Chrome extension with a dashboard for every order, fee, tip and restaurant. Your data never leaves your browser.
+See exactly how much you've spent on food delivery. A private Edge and Chrome extension for DoorDash and Uber Eats with a dashboard for every order, fee, tip and restaurant. Your data never leaves your browser.
 
 **Website:** leave blank (or your repo's Releases page)
 
@@ -13,8 +13,8 @@ doordash, browser-extension, edge-extension, chrome-extension, manifest-v3, spen
 **Social preview image** (Settings → General → Social preview): upload `screenshots/overview-light.png` or `screenshots/overview.png`
 
 **First release** (Releases → Draft a new release):
-- Tag: `v1.0.0`
-- Title: `FatPass 1.0`
+- Tag: `v1.1.0`
+- Title: `FatPass 1.1`
 - Attach a ZIP of this folder so people can download it in one click
 - Notes:
   - Syncs your full DoorDash history with receipts (6 at a time)

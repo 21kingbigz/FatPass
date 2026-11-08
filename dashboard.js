@@ -24,9 +24,10 @@ async function load() {
 function applyFilters() {
   const from = $('#from').value ? new Date($('#from').value + 'T00:00') : null;
   const to = $('#to').value ? new Date($('#to').value + 'T23:59:59') : null;
-  const store = $('#store').value, type = $('#type').value, inclC = $('#cancelled').checked;
+  const store = $('#store').value, type = $('#type').value, app = $('#app').value, inclC = $('#cancelled').checked;
   VIEW = ALL.filter((o) =>
     (!from || o.d >= from) && (!to || o.d <= to) && (!store || o.store === store) && (inclC || !o.cancelled) &&
+    (!app || (o.platform || 'doordash') === app) &&
     (!type || (type === 'pickup' ? o.pickup : type === 'group' ? o.group : !o.pickup)));
   render();
 }
@@ -185,6 +186,7 @@ const TABS = {
       ${allR.length ? kpi('First order ever', fd(allR[0].d), `${esc(allR[0].store)} · ${money(allR[0].total)}`) + kpi('Latest order', fd(allR[allR.length - 1].d), esc(allR[allR.length - 1].store)) : ''}
     </div>
     ${card('Spending over time', lineChart(mon))}
+    ${(() => { const apps = [...groupBy(L, (o) => o.platform || 'doordash')]; return apps.length > 1 ? card('DoorDash vs Uber Eats', hbars(apps.map(([k, a]) => ({ l: `${k === 'ubereats' ? 'Uber Eats' : 'DoorDash'} · ${a.length} orders`, v: sum(a, (o) => o.total) })).sort((a, b) => b.v - a.v))) : ''; })()}
     <div class="grid2">${card('Top restaurants', hbars([...stores].map(([l, a]) => ({ l, v: sum(a, (o) => o.total) })).sort((a, b) => b.v - a.v).slice(0, 7)))}
     ${card('Where your money goes', donut(breakdown(L)))}</div>`;
   },
@@ -271,10 +273,10 @@ const TABS = {
   orders() {
     const q = ($('#orderQ')?.value || '').toLowerCase();
     const rows = VIEW.filter((o) => !q || o.store.toLowerCase().includes(q) || o.items.some((i) => i.name.toLowerCase().includes(q)))
-      .map((o) => ({ _key: o.id, date: +o.d, store: o.store, items: sum(o.items, (i) => i.qty), sub: o.fees.subtotal, fee: feeTotal(o), tip: o.fees.tip, total: o.total, cancelled: o.cancelled, pickup: o.pickup }));
+      .map((o) => ({ _key: o.id, date: +o.d, store: o.store, items: sum(o.items, (i) => i.qty), sub: o.fees.subtotal, fee: feeTotal(o), tip: o.fees.tip, total: o.total, cancelled: o.cancelled, pickup: o.pickup, app: o.platform || 'doordash' }));
     return card(`Orders (${rows.length}) <span class="pill">click for receipt</span>`, `<div class="toolbar"><input id="orderQ" placeholder="Search restaurant or item…" value="${esc(q)}"></div>` + table('tOrders', [
       { k: 'date', l: 'Date', def: 1, f: (v) => new Date(v).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) },
-      { k: 'store', l: 'Restaurant', f: (v, r) => esc(v) + (r.cancelled ? '<span class="pill warn">cancelled</span>' : '') + (r.pickup ? '<span class="pill">pickup</span>' : '') },
+      { k: 'store', l: 'Restaurant', f: (v, r) => esc(v) + (r.cancelled ? '<span class="pill warn">cancelled</span>' : '') + (r.pickup ? '<span class="pill">pickup</span>' : '') + (r.app === 'ubereats' ? '<span class="pill ue">Uber Eats</span>' : '') },
       { k: 'items', l: 'Items', n: 1 }, { k: 'sub', l: 'Food', n: 1, f: money }, { k: 'fee', l: 'Fees', n: 1, f: money }, { k: 'tip', l: 'Tip', n: 1, f: money }, { k: 'total', l: 'Total', n: 1, f: money }
     ], rows, { onRow: true }));
   }
@@ -327,6 +329,7 @@ function render() {
   $('#main').innerHTML = TABS[tab]();
   $('#title').textContent = $(`.tabs [data-t=${tab}]`).textContent.trim();
   wireTips();
+  $('#appLabel').textContent = { '': 'DoorDash + Uber Eats', doordash: 'DoorDash', ubereats: 'Uber Eats' }[$('#app').value];
   $('#rangeLabel').textContent = $('#from').value && $('#to').value ? `${$('#from').value} → ${$('#to').value}` : 'All time';
   if (focus && $('#' + focus) && $('#' + focus).tagName === 'INPUT' && $('#main').contains($('#' + focus))) { const el = $('#' + focus); el.focus(); el.setSelectionRange(pos, pos); }
 }
@@ -335,8 +338,8 @@ function render() {
 $$('.tabs button').forEach((b) => (b.onclick = () => { tab = b.dataset.t; $$('.tabs button').forEach((x) => x.classList.toggle('on', x === b)); render(); }));
 $$('.presets button').forEach((b) => (b.onclick = () => setPreset(b.dataset.p)));
 $('#apply').onclick = () => { $$('.presets button').forEach((b) => b.classList.remove('on')); applyFilters(); };
-$('#reset').onclick = () => { $('#store').value = ''; $('#type').value = ''; $('#cancelled').checked = false; setPreset('all'); };
-['#store', '#type', '#cancelled'].forEach((s) => ($(s).onchange = applyFilters));
+$('#reset').onclick = () => { $('#app').value = ''; $('#store').value = ''; $('#type').value = ''; $('#cancelled').checked = false; setPreset('all'); };
+['#app', '#store', '#type', '#cancelled'].forEach((s) => ($(s).onchange = applyFilters));
 
 let debounce;
 $('#main').addEventListener('input', (e) => { if (['itemQ', 'orderQ'].includes(e.target.id)) { clearTimeout(debounce); debounce = setTimeout(render, 150); } });
@@ -353,7 +356,7 @@ $('#main').addEventListener('click', (e) => {
     const lines = o.lines.length ? o.lines.map((l) => `<tr><td>${esc(l.label)}</td><td class="n">${money(l.amount)}</td></tr>`).join('') : '';
     tr.insertAdjacentHTML('afterend', `<tr class="detail"><td colspan="7"><div class="grid2"><div><b>Items</b><table>${o.items.map((i) => `<tr><td>${i.qty}× ${esc(i.name)}</td><td class="n">${money(i.price * i.qty)}</td></tr>`).join('')}</table></div>
       <div><b>Receipt</b><table>${lines}<tr><td><b>Total</b></td><td class="n"><b>${money(o.total)}</b></td></tr></table>
-      <p>${esc(o.card)} ${o.address ? '· ' + esc(o.address) : ''}</p><a href="https://www.doordash.com/orders/${esc(o.uuid)}" target="_blank">Open on DoorDash ↗</a></div></div></td></tr>`);
+      <p>${esc(o.card)} ${o.address ? '· ' + esc(o.address) : ''}</p>${o.platform === 'ubereats' ? `<a href="https://www.ubereats.com/orders/${esc(o.uuid)}" target="_blank">Open on Uber Eats ↗</a>` : `<a href="https://www.doordash.com/orders/${esc(o.uuid)}" target="_blank">Open on DoorDash ↗</a>`}</div></div></td></tr>`);
   }
 });
 
