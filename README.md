@@ -239,7 +239,7 @@ Ideas: Uber Eats and Grubhub support, monthly budget alerts, charts you can shar
 - Inspired by [BiteStats](https://github.com/SDev6699/bitestats) by Sahil Atul Darandale (MIT License).
 - Font: [Manrope](https://fonts.google.com/specimen/Manrope) from Google Fonts.
 
-**Disclaimer:** FatPass is an independent project and isn't affiliated with, endorsed by or sponsored by DoorDash. "DoorDash" and "DashPass" are trademarks of DoorDash, Inc.
+**Disclaimer:** FatPass is an independent project and isn't affiliated with, endorsed by or sponsored by DoorDash. "DoorDash" and "DashPass" are trademarks of DoorDash, Inc. This extension is also made with claude.
 
 ## License
 
