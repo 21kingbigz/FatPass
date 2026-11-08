@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FatPass</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9h16l-1-5H5zM5 9v11h14V9M9 20v-6h6v6"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12m0 0-5-5m5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V8m0 0-5 5m5-5 5 5M4 4h16"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><img src="icons/icon-128.png" alt=""><span>FatPass</span></div>
+    <nav class="tabs">
+      <button data-t="overview" class="on"><svg><use href="#i-home"/></svg><span>Overview</span></button>
+      <button data-t="restaurants"><svg><use href="#i-store"/></svg><span>Restaurants</span></button>
+      <button data-t="items"><svg><use href="#i-bag"/></svg><span>Items</span></button>
+      <button data-t="fees"><svg><use href="#i-receipt"/></svg><span>Fees &amp; tips</span></button>
+      <button data-t="trends"><svg><use href="#i-trend"/></svg><span>Trends</span></button>
+      <button data-t="habits"><svg><use href="#i-clock"/></svg><span>Habits</span></button>
+      <button data-t="orders"><svg><use href="#i-list"/></svg><span>Orders</span></button>
+    </nav>
+    <div class="side-foot">
+      <button id="exportCsv"><svg><use href="#i-down"/></svg><span>Export CSV</span></button>
+      <button id="exportJson"><svg><use href="#i-down"/></svg><span>Export JSON</span></button>
+      <label class="btn"><svg><use href="#i-up"/></svg><span>Import JSON</span><input type="file" id="importJson" accept=".json" hidden></label>
+      <button id="theme"><svg><use href="#i-moon"/></svg><span>Light mode</span></button>
+      <button id="clear" class="danger"><svg><use href="#i-trash"/></svg><span>Clear data</span></button>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="top">
+      <div>
+        <h1 id="title">Overview</h1>
+        <p class="crumb">DoorDash · <span id="rangeLabel">All time</span></p>
+      </div>
+      <div class="presets" role="group" aria-label="Date range">
+        <button data-p="7">7D</button><button data-p="30">30D</button><button data-p="90">90D</button>
+        <button data-p="ytd">YTD</button><button data-p="365">1Y</button><button data-p="all" class="on">All</button>
+      </div>
+    </header>
+
+    <section class="filters">
+      <label class="field"><svg><use href="#i-cal"/></svg><input type="date" id="from" aria-label="From"></label>
+      <span class="dash">→</span>
+      <label class="field"><svg><use href="#i-cal"/></svg><input type="date" id="to" aria-label="To"></label>
+      <select id="store" aria-label="Restaurant"><option value="">All restaurants</option></select>
+      <select id="type" aria-label="Order type"><option value="">All order types</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option><option value="group">Group</option></select>
+      <label class="chk"><input type="checkbox" id="cancelled"> Include cancelled</label>
+      <span class="fbtns"><button id="reset" class="ghost">Reset</button><button id="apply" class="primary">Apply filters</button></span>
+    </section>
+
+    <main id="main"></main>
+    <div id="empty" hidden>
+      <img src="icons/icon-128.png" alt="">
+      <h2>No orders yet</h2>
+      <p>Open <a href="https://www.doordash.com/orders/" target="_blank">doordash.com</a> while logged in, click the FatPass icon, then click <b>Sync new orders</b>.</p>
+    </div>
+  </div>
+</div>
+<script src="dashboard.js"></script>
+</body></html>

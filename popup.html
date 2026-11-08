@@ -1,0 +1,39 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>FatPass</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;width:320px;padding:16px;background:#0f0f1a;color:#f2f2fa;font:500 13px/1.45 Manrope,system-ui,sans-serif}
+  .head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .head img{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c5cff,#c45cff 55%,#ff5c93);padding:3px}
+  .head b{font:800 18px Manrope;letter-spacing:-.02em;display:block}
+  .head span{color:#8b8ba7;font-size:12px}
+  .total{background:linear-gradient(135deg,#7c5cff,#c45cff 55%,#ff5c93);border-radius:18px;padding:14px 16px;box-shadow:0 10px 30px -10px rgba(124,92,255,.6)}
+  .total .l{font-size:12px;opacity:.85}
+  .total .v{font:800 28px/1.15 Manrope;letter-spacing:-.03em;margin:2px 0}
+  .total .s{font-size:12px;opacity:.85}
+  .status{display:flex;align-items:center;gap:8px;margin:14px 2px 8px;color:#b9b9d0}
+  .dot{width:8px;height:8px;border-radius:50%;background:#8b8ba7;flex:none}
+  .dot.ok{background:#3ee08f}.dot.busy{background:#ffb547}.dot.bad{background:#ff5c93}
+  .bar{height:6px;background:#232338;border-radius:6px;overflow:hidden}
+  .bar div{height:100%;width:0;background:linear-gradient(90deg,#7c5cff,#ff5c93);border-radius:6px;transition:width .2s}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  button{font:700 13px Manrope;color:#f2f2fa;background:#1b1b2b;border:1px solid #2a2a40;border-radius:12px;padding:11px;cursor:pointer;transition:border-color .15s,transform .15s}
+  button:hover:not(:disabled){border-color:#7c5cff}
+  button:disabled{opacity:.4;cursor:default}
+  .primary{grid-column:1/-1;background:linear-gradient(135deg,#7c5cff,#c45cff 55%,#ff5c93);border:0;color:#fff;box-shadow:0 8px 22px -8px rgba(124,92,255,.7)}
+  .primary:hover:not(:disabled){transform:translateY(-1px)}
+  button:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+</style></head>
+<body>
+  <div class="head"><img src="icons/icon-128.png" alt=""><div><b>FatPass</b><span id="synced">Not synced yet</span></div></div>
+  <div class="total"><div class="l">Total spent</div><div class="v" id="tot">$0.00</div><div class="s" id="cnt">No orders yet</div></div>
+  <div class="status"><span class="dot" id="dot"></span><span id="msg">Checking…</span></div>
+  <div class="bar"><div id="prog"></div></div>
+  <div class="btns">
+    <button id="sync" class="primary">Sync new orders</button>
+    <button id="full">Full re-sync</button>
+    <button id="dash">Open dashboard</button>
+  </div>
+  <script src="popup.js"></script>
+</body></html>

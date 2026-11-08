@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+*.zip
+*.crx
+*.pem
+fatpass-*.csv
+fatpass-*.json
