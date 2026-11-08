@@ -6,13 +6,13 @@
 
 <p align="center">
   <b>See exactly how much you've spent on DoorDash: every order, fee and tip.</b><br>
-  A free, private Microsoft Edge extension. No account, no servers, no tracking.
+  A free, private extension for Microsoft Edge and Google Chrome. No account, no servers, no tracking.
 </p>
 
 <p align="center">
   <img alt="Manifest V3" src="https://img.shields.io/badge/manifest-v3-7c5cff">
   <img alt="Microsoft Edge" src="https://img.shields.io/badge/Microsoft%20Edge-supported-0078d7">
-  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-works%20too-ff5c93">
+  <img alt="Google Chrome" src="https://img.shields.io/badge/Google%20Chrome-supported-ff5c93">
   <img alt="No dependencies" src="https://img.shields.io/badge/dependencies-0-3ee08f">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-ffb547">
 </p>
@@ -93,17 +93,15 @@
 
 ## Install
 
-FatPass isn't on the Edge Add-ons store yet, so you load it yourself. It takes about a minute.
+FatPass isn't on the Edge Add-ons or Chrome Web Store yet, so you load it yourself. It takes about a minute, and the steps are the same in both browsers.
 
 1. **Download it.** Click the green **Code** button at the top of this page, then **Download ZIP**, and unzip it somewhere you'll keep it (for example your Documents folder).
-2. **Open Edge's extension page.** Go to `edge://extensions`.
-3. **Turn on Developer mode.** It's the switch in the bottom-left corner.
+2. **Open the extensions page.** Go to `edge://extensions` in Edge or `chrome://extensions` in Chrome.
+3. **Turn on Developer mode.** In Edge it's the switch in the bottom-left corner; in Chrome it's in the top-right corner.
 4. **Load it.** Click **Load unpacked** and pick the unzipped folder (the one with `manifest.json` inside).
 5. **Pin it.** Click the puzzle-piece icon in the toolbar and pin FatPass so the mascot is always visible.
 
-> **Using Chrome?** It works the same way: go to `chrome://extensions`, turn on Developer mode, and click **Load unpacked**.
-
-**Updating:** download the new ZIP, replace the old folder's files, then click **Reload** on FatPass in `edge://extensions`. Your synced orders stay saved.
+**Updating:** download the new ZIP, replace the old folder's files, then click **Reload** on FatPass on the extensions page. Your synced orders stay saved.
 
 ---
 
@@ -149,7 +147,7 @@ Next time, just click **Sync new orders** again. It only grabs orders you've pla
 
 ## Privacy
 
-- **Your data stays on your computer.** Orders are kept in Edge's local extension storage and never get uploaded anywhere.
+- **Your data stays on your computer.** Orders are kept in your browser's local extension storage and never get uploaded anywhere.
 - **No analytics, no tracking, no ads, no account.**
 - **Only talks to doordash.com**, and only when you click Sync.
 - **Permissions it asks for:**
@@ -220,7 +218,7 @@ FatPass/
 └── screenshots/      images for this README
 ```
 
-Plain HTML, CSS and JavaScript. Nothing to install, no build step. Edit a file, click **Reload** in `edge://extensions`, and refresh the dashboard.
+Plain HTML, CSS and JavaScript. Nothing to install, no build step. Edit a file, click **Reload** on the extensions page, and refresh the dashboard.
 
 ---
 
@@ -232,7 +230,7 @@ Bug reports and pull requests are welcome.
 2. Load your copy with **Load unpacked** and test it on your own DoorDash account.
 3. Open a pull request saying what you changed and why.
 
-Ideas: Uber Eats and Grubhub support, monthly budget alerts, charts you can share, and publishing to the Edge Add-ons store.
+Ideas: Uber Eats and Grubhub support, monthly budget alerts, charts you can share, and publishing to the Edge Add-ons and Chrome Web Store.
 
 ---
 

@@ -3,7 +3,7 @@
 **Repository name:** fatpass
 
 **Description (About box):**
-See exactly how much you've spent on DoorDash. A private Edge extension with a dashboard for every order, fee, tip and restaurant. Your data never leaves your browser.
+See exactly how much you've spent on DoorDash. A private Edge and Chrome extension with a dashboard for every order, fee, tip and restaurant. Your data never leaves your browser.
 
 **Website:** leave blank (or your repo's Releases page)
 
