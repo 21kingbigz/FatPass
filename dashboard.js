@@ -319,13 +319,21 @@ document.addEventListener('mousemove', (e) => {
   if (y < 8) y = e.clientY + 18;
   tip.style.transform = `translate(${x}px,${y}px)`;
 });
-document.addEventListener('scroll', () => (tip.hidden = true), true);
+const hideTip = () => { tip.hidden = true; };
+document.addEventListener('scroll', hideTip, true);
+document.addEventListener('mousedown', hideTip);
+document.addEventListener('keydown', hideTip);
+document.addEventListener('mouseout', (e) => { if (!e.relatedTarget || !e.relatedTarget.closest?.('[data-tip]')) hideTip(); });
+document.documentElement.addEventListener('mouseleave', hideTip);
+window.addEventListener('blur', hideTip);
+document.addEventListener('visibilitychange', hideTip);
 
 function render() {
   $('#empty').hidden = ALL.length > 0;
   $('#main').hidden = !ALL.length;
   if (!ALL.length) return;
   const focus = document.activeElement?.id, pos = document.activeElement?.selectionStart;
+  hideTip();
   $('#main').innerHTML = TABS[tab]();
   $('#title').textContent = $(`.tabs [data-t=${tab}]`).textContent.trim();
   wireTips();
