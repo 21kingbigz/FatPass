@@ -140,6 +140,7 @@ tr.clk:hover td:first-child{border-radius:12px 0 0 12px}tr.clk:hover td:last-chi
 
 /* tooltips + hover */
 .tip{position:fixed;left:0;top:0;z-index:50;pointer-events:none;background:#0b0b14;color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 12px;font:600 12px Manrope;box-shadow:0 12px 30px -8px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:2px;white-space:nowrap}
+.tip[hidden]{display:none}
 .tip span{color:#9d9db8;font-weight:600}.tip b{font:800 15px Manrope}
 .hit{opacity:0;transition:opacity .12s;cursor:crosshair}
 svg:hover .hit{opacity:.35}svg .hit:hover{opacity:1}
